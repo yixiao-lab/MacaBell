@@ -1,0 +1,104 @@
+/* 马卡龙提醒弹窗样式 —— 糖果色、圆角、柔和阴影、无 emoji
+   具体配色由 App.tsx 每次随机注入到 .card 的 CSS 变量上 */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  /* 窗口透明，body 不要背景，靠卡片自身呈现 */
+  background: transparent;
+  overflow: hidden;
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+.card {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  left: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: var(--card-bg, linear-gradient(135deg, #fff7fb 0%, #ffd6e8 100%));
+  box-shadow:
+    0 10px 30px var(--card-shadow, rgba(255, 158, 196, 0.35)),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+
+  /* 初始态：滑出在右侧 + 透明 */
+  transform: translateX(120%);
+  opacity: 0;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.32s ease;
+}
+
+.card--in {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.card__dot {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--card-dot, linear-gradient(135deg, #ff9ec4, #c8f4e3));
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.55);
+}
+
+.card__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--card-title, #d65a93);
+  letter-spacing: 0.3px;
+  margin-bottom: 6px;
+}
+
+.card__message {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--card-text, #6b5b73);
+  word-break: break-word;
+}
+
+.card__close {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--card-title, #d65a93);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.card__close:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+.card__close:active {
+  transform: scale(0.92);
+}
