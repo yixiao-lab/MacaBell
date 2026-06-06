@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "macaron-reminder",
+  "productName": "Macabell",
   "version": "0.1.0",
   "identifier": "com.yixiao.macaron",
   "build": {
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "macaron-reminder",
+        "title": "Macabell",
         "width": 340,
         "height": 190,
         "resizable": false,

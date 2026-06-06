@@ -1,10 +1,17 @@
-# macaron-reminder · 马卡龙提醒
+# Macabell · 马卡龙提醒
 
 一个很小很可爱的 **Mac 菜单栏提醒小工具**。到点后，从屏幕右侧滑入一个温和的糖果色小弹窗，提醒你该休息、该做事，或者别忘了某个重要日子。
 
 没有账号，没有云同步，没有复杂后台——配置就是一个本地 JSON 文件，简单、直接、够用。
 
 ![预览](assets/preview.png)
+
+## 下载与安装
+
+- 🍬 **官网**：https://yixiao-lab.github.io/macaron-reminder/
+- ⬇️ **下载**：[最新版 .dmg](https://github.com/yixiao-lab/macaron-reminder/releases/latest)（仅 Apple Silicon / M 系列）
+
+> 应用未做 Apple 付费签名，首次打开若提示「无法验证开发者」或「已损坏」：在「应用程序」里**右键点 Macabell → 打开**，再点一次「打开」即可；仍不行就在终端执行一次 `xattr -dr com.apple.quarantine /Applications/Macabell.app`。
 
 ## 特点
 
@@ -74,6 +81,10 @@ pnpm tauri build    # 打包成 .app / .dmg
 我自己平时写代码、做项目，经常会忘记站起来活动，也会漏掉一些固定的小任务，所以想做一个看着舒服、不打扰心流的小工具。
 
 小工具不一定要很大，能解决一个自己真实的问题，就已经有价值了。
+
+## 反馈
+
+这个工具还很小，正在靠反馈长大。用得不顺手、想要某类提醒、或发现 bug，欢迎到 [GitHub Issues](https://github.com/yixiao-lab/macaron-reminder/issues) 提，看到都会回。
 
 ## License
 
