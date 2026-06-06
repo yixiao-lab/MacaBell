@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Macabell · 马卡龙提醒</title>
+  <meta name="description" content="一个很小很可爱的 Mac 菜单栏提醒小工具。到点从屏幕右侧滑入糖果色弹窗，提醒你休息、做事、别忘了重要的日子。本地 JSON 配置，无账号、无云同步。" />
+  <meta property="og:title" content="Macabell · 马卡龙提醒" />
+  <meta property="og:description" content="到点从屏幕右侧滑入的糖果色 Mac 提醒小工具。看着舒服，不打扰心流。" />
+  <style>
+    :root {
+      --ink: #5b4a5f;
+      --ink-soft: #8a7b8f;
+      --rose: #d65a93;
+      --page-1: #fff7fb;
+      --page-2: #f7f3ff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      line-height: 1.7;
+      background:
+        radial-gradient(1200px 600px at 80% -10%, #ffe6f1 0%, transparent 60%),
+        radial-gradient(1000px 600px at 0% 10%, #ece3ff 0%, transparent 55%),
+        linear-gradient(180deg, var(--page-1) 0%, var(--page-2) 100%);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+    a { color: var(--rose); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ---------- Hero ---------- */
+    header { padding: 84px 0 56px; text-align: center; }
+    .logo {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 84px; height: 84px; border-radius: 24px;
+      background: linear-gradient(135deg, #fff7fb 0%, #ffd6e8 100%);
+      box-shadow: 0 12px 34px rgba(255, 158, 196, 0.4), inset 0 0 0 2px rgba(255,255,255,.7);
+      font-size: 44px; margin-bottom: 22px;
+    }
+    h1 { font-size: 44px; letter-spacing: 1px; margin-bottom: 6px; color: #c44e87; }
+    .sub { font-size: 17px; color: var(--ink-soft); margin-bottom: 8px; }
+    .lead {
+      font-size: 19px; max-width: 560px; margin: 18px auto 34px;
+      color: var(--ink);
+    }
+    .cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 26px; border-radius: 999px; font-size: 15px; font-weight: 600;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .btn:hover { text-decoration: none; transform: translateY(-2px); }
+    .btn--primary {
+      background: linear-gradient(135deg, #ff9ec4, #ffb8a8);
+      color: #fff; box-shadow: 0 10px 26px rgba(255, 142, 180, 0.5);
+    }
+    .btn--ghost {
+      background: rgba(255,255,255,.7); color: var(--ink);
+      box-shadow: inset 0 0 0 1.5px rgba(214, 90, 147, .25);
+    }
+    .hint { margin-top: 16px; font-size: 13px; color: var(--ink-soft); }
+
+    /* ---------- Palette showcase ---------- */
+    section { padding: 40px 0; }
+    h2 { font-size: 26px; text-align: center; margin-bottom: 8px; color: #b8487c; }
+    .section-sub { text-align: center; color: var(--ink-soft); margin-bottom: 34px; }
+    .cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+      gap: 18px;
+    }
+    .card {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 18px 20px; border-radius: 22px;
+      border: 2px solid rgba(255,255,255,.7);
+    }
+    .card .dot { flex: 0 0 auto; width: 14px; height: 14px; margin-top: 4px; border-radius: 50%; box-shadow: 0 0 0 4px rgba(255,255,255,.55); }
+    .card .title { font-size: 15px; font-weight: 700; margin-bottom: 5px; letter-spacing: .3px; }
+    .card .msg { font-size: 13.5px; line-height: 1.5; }
+    .card .x { margin-left: auto; opacity: .5; font-size: 16px; }
+
+    /* ---------- Features ---------- */
+    .feat { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+    .feat .item {
+      background: rgba(255,255,255,.6); border-radius: 18px; padding: 22px 22px 20px;
+      box-shadow: 0 6px 20px rgba(180, 150, 200, 0.12);
+    }
+    .feat .item h3 { font-size: 16px; margin-bottom: 6px; color: var(--rose); }
+    .feat .item p { font-size: 14px; color: var(--ink-soft); }
+
+    /* ---------- Reminder types ---------- */
+    .types { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .type {
+      background: rgba(255,255,255,.66); border-radius: 18px; padding: 20px;
+      box-shadow: 0 6px 20px rgba(180, 150, 200, 0.12);
+    }
+    .type code { background: rgba(214,90,147,.1); color: #c44e87; padding: 2px 8px; border-radius: 6px; font-size: 13px; }
+    .type p { font-size: 14px; color: var(--ink-soft); margin-top: 8px; }
+    .type .eg { font-size: 13px; color: var(--ink); margin-top: 6px; }
+
+    /* ---------- Steps & code ---------- */
+    .steps { counter-reset: step; max-width: 680px; margin: 0 auto; }
+    .step {
+      position: relative; padding: 16px 16px 16px 56px; margin-bottom: 12px;
+      background: rgba(255,255,255,.6); border-radius: 16px;
+    }
+    .step::before {
+      counter-increment: step; content: counter(step);
+      position: absolute; left: 16px; top: 14px;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(135deg, #ff9ec4, #ffb8a8); color: #fff;
+      display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;
+    }
+    .step b { color: var(--rose); }
+    pre {
+      background: #2e2733; color: #f3e8f0; border-radius: 16px;
+      padding: 20px 22px; overflow-x: auto; font-size: 13px; line-height: 1.65;
+      max-width: 680px; margin: 18px auto 0;
+      font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+    }
+    .note {
+      max-width: 680px; margin: 16px auto 0; padding: 14px 18px;
+      background: rgba(255, 243, 200, .55); border-radius: 14px;
+      font-size: 13.5px; color: #6b6552; border: 1.5px solid rgba(245,214,120,.5);
+    }
+
+    footer { text-align: center; padding: 50px 0 60px; color: var(--ink-soft); font-size: 13.5px; }
+    footer a { font-weight: 600; }
+    @media (max-width: 560px) { h1 { font-size: 36px; } header { padding: 60px 0 40px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="logo">🍬</div>
+      <h1>Macabell</h1>
+      <p class="sub">马卡龙提醒 · 一个很小很可爱的 Mac 菜单栏提醒小工具</p>
+      <p class="lead">到点后，从屏幕右侧滑入一个温和的糖果色小弹窗，提醒你该休息、该做事，或者别忘了某个重要日子。没有账号，没有云同步，配置就是一个本地 JSON 文件。</p>
+      <div class="cta">
+        <a class="btn btn--primary" href="https://github.com/yixiao-lab/macaron-reminder/releases/latest">下载 for macOS（Apple Silicon）</a>
+        <a class="btn btn--ghost" href="https://github.com/yixiao-lab/macaron-reminder">GitHub 源码</a>
+      </div>
+      <p class="hint">免费开源 · MIT · 仅 Apple Silicon（M 系列）· 应用未签名，首次打开见下方「安装」说明</p>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <h2>6 套马卡龙配色，每次随机</h2>
+      <p class="section-sub">看着舒服、不焦虑、不打扰心流</p>
+      <div class="cards">
+        <!-- 草莓粉 -->
+        <div class="card" style="background:linear-gradient(135deg,#fff7fb 0%,#ffd6e8 100%);box-shadow:0 10px 30px rgba(255,158,196,.35)">
+          <span class="dot" style="background:linear-gradient(135deg,#ff9ec4,#c8f4e3)"></span>
+          <div><div class="title" style="color:#d65a93">久坐提醒</div><div class="msg" style="color:#6b5b73">起来动动，喝口水吧</div></div>
+          <span class="x" style="color:#d65a93">×</span>
+        </div>
+        <!-- 薄荷绿 -->
+        <div class="card" style="background:linear-gradient(135deg,#f3fffb 0%,#c8f4e3 100%);box-shadow:0 10px 30px rgba(120,214,184,.35)">
+          <span class="dot" style="background:linear-gradient(135deg,#7ad6b8,#d6f0ff)"></span>
+          <div><div class="title" style="color:#3fa98a">工作提醒</div><div class="msg" style="color:#5a6b66">该写周报啦</div></div>
+          <span class="x" style="color:#3fa98a">×</span>
+        </div>
+        <!-- 薰衣草紫 -->
+        <div class="card" style="background:linear-gradient(135deg,#fbf7ff 0%,#e3d6ff 100%);box-shadow:0 10px 30px rgba(184,155,232,.35)">
+          <span class="dot" style="background:linear-gradient(135deg,#b89be8,#ffd6e8)"></span>
+          <div><div class="title" style="color:#8b6fc4">喝水时间</div><div class="msg" style="color:#645b73">放下手头，补一杯水</div></div>
+          <span class="x" style="color:#8b6fc4">×</span>
+        </div>
+        <!-- 柠檬黄 -->
+        <div class="card" style="background:linear-gradient(135deg,#fffdf3 0%,#fff3c8 100%);box-shadow:0 10px 30px rgba(245,214,120,.4)">
+          <span class="dot" style="background:linear-gradient(135deg,#f5d678,#fff0c8)"></span>
+          <div><div class="title" style="color:#c9a23f">站起来</div><div class="msg" style="color:#6b6552">伸个懒腰，看看远处</div></div>
+          <span class="x" style="color:#c9a23f">×</span>
+        </div>
+        <!-- 天空蓝 -->
+        <div class="card" style="background:linear-gradient(135deg,#f3fbff 0%,#cfe8ff 100%);box-shadow:0 10px 30px rgba(140,196,240,.35)">
+          <span class="dot" style="background:linear-gradient(135deg,#8cc4f0,#d6f0ff)"></span>
+          <div><div class="title" style="color:#4f8fc4">深呼吸</div><div class="msg" style="color:#5b6673">慢慢吸气，再慢慢呼出</div></div>
+          <span class="x" style="color:#4f8fc4">×</span>
+        </div>
+        <!-- 蜜桃橙 -->
+        <div class="card" style="background:linear-gradient(135deg,#fff7f3 0%,#ffe0cf 100%);box-shadow:0 10px 30px rgba(245,168,120,.35)">
+          <span class="dot" style="background:linear-gradient(135deg,#f5a878,#ffe0cf)"></span>
+          <div><div class="title" style="color:#d6824f">纪念日</div><div class="msg" style="color:#735f52">今天是个特别的日子</div></div>
+          <span class="x" style="color:#d6824f">×</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>它的样子</h2>
+      <p class="section-sub">克制，是为了不打扰</p>
+      <div class="feat">
+        <div class="item"><h3>🧭 常驻菜单栏</h3><p>没有主窗口，只在顶部菜单栏放一个小图标，需要时才出现。</p></div>
+        <div class="item"><h3>🔕 不抢焦点</h3><p>弹窗不夺取键盘焦点、不自动消失，手头的事不被打断，随手点掉即可。</p></div>
+        <div class="item"><h3>📂 本地 JSON 配置</h3><p>所有提醒写在一个文件里，所见即所得。改完 ≤20 秒自动生效，无需重启。</p></div>
+        <div class="item"><h3>🔊 柔和提示音</h3><p>带全局开关，可在托盘菜单里随时切换。</p></div>
+        <div class="item"><h3>🚀 开机自启</h3><p>一键开启，登录即常驻，再也不用记得手动打开。</p></div>
+        <div class="item"><h3>🤫 纯本地</h3><p>无账号、无云同步、无后台上传。你的提醒只待在你自己的电脑上。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>三类提醒，覆盖日常</h2>
+      <p class="section-sub">每日定时 / 固定间隔 / 每年纪念日</p>
+      <div class="types">
+        <div class="type"><code>daily</code><p>每天固定时间点</p><div class="eg">例：每天 14:00 写周报</div></div>
+        <div class="type"><code>interval</code><p>固定间隔循环</p><div class="eg">例：每 60 分钟起身动动</div></div>
+        <div class="type"><code>anniversary</code><p>每年某月某日</p><div class="eg">例：每年 06-15 的纪念日</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>安装</h2>
+      <p class="section-sub">仅支持 Apple Silicon（M1 及以后）</p>
+      <div class="steps">
+        <div class="step">下载 <b>Macabell_0.1.0_aarch64.dmg</b>，双击打开，把 Macabell 拖进「应用程序」。</div>
+        <div class="step">首次打开若提示<b>「无法验证开发者」或「已损坏」</b>，是因为应用未做 Apple 付费签名 —— 在「应用程序」里<b>右键点 Macabell → 打开</b>，再点一次「打开」即可。</div>
+        <div class="step">顶部菜单栏出现 🍬 图标即成功。点它 → <b>测试提醒一下</b>，右上角会滑入一个糖果色弹窗。</div>
+      </div>
+      <div class="note">
+        ⌘ 还是打不开？打开「终端」执行一次：<br />
+        <code style="color:#c44e87">xattr -dr com.apple.quarantine /Applications/Macabell.app</code><br />
+        这会移除系统给未签名应用加的隔离属性，之后正常双击即可。
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>怎么配提醒</h2>
+      <p class="section-sub">首次启动会生成 <code style="background:rgba(214,90,147,.1);color:#c44e87;padding:2px 8px;border-radius:6px;font-size:13px">~/.macaron-reminder/reminders.json</code>，用任意编辑器改它</p>
+      <pre>{
+  "soundEnabled": true,
+  "reminders": [
+    { "id": "work-report", "type": "daily", "time": "14:00",
+      "title": "工作提醒", "message": "该写周报啦" },
+
+    { "id": "sit-too-long", "type": "interval", "everyMinutes": 60,
+      "title": "久坐提醒", "message": "起来动动，喝口水吧" },
+
+    { "id": "anniversary", "type": "anniversary", "date": "06-15", "time": "09:00",
+      "title": "纪念日", "message": "今天是个特别的日子" }
+  ]
+}</pre>
+      <div class="note">改完保存即可，<b>无需重启</b> —— 后台每 20 秒读取一次最新配置。想加提醒就往数组里加一项，想停某条就删掉它。</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>用着用着有想法？</h2>
+      <p class="section-sub">这是一个还很小的工具，正在等你的反馈长大</p>
+      <div class="cta">
+        <a class="btn btn--ghost" href="https://github.com/yixiao-lab/macaron-reminder/issues/new">去 GitHub 提个想法 / 报个问题</a>
+      </div>
+      <p class="hint">觉得哪里不顺手、想要某类提醒、或者只是想说句话，都欢迎。看到都会回。</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      Macabell · 马卡龙提醒 &nbsp;·&nbsp; 免费开源 MIT &nbsp;·&nbsp;
+      <a href="https://github.com/yixiao-lab/macaron-reminder">GitHub</a><br />
+      <span style="opacity:.7">小工具不一定要很大，能解决一个自己真实的问题，就已经有价值了。</span>
+    </div>
+  </footer>
+</body>
+</html>
