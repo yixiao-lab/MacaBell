@@ -6,7 +6,7 @@
 
 > v0.2.0 重点优化了开源可用性：Universal macOS DMG、GitHub Actions 自动打包、多提醒堆叠、配置错误提示、打开配置文件菜单、示例配置文件。
 
-![预览](assets/preview.png)
+![MacaBell · 多条提醒堆叠不覆盖](assets/screenshots/popup-stack.png)
 
 ## 下载与安装
 
@@ -27,6 +27,12 @@
 - 柔和提示音：带全局开关，可在托盘菜单里随时切换
 - 开机自启：一键开启，登录即常驻
 - Universal DMG：支持 Apple Silicon 和 Intel Mac
+
+## 界面预览
+
+到点后从屏幕右上角滑入糖果色小弹窗。单条提醒长这样，同一时间多条会自动堆叠、互不覆盖（见顶部预览图），每条都能单独关掉：
+
+![单条提醒](assets/screenshots/popup-single.png)
 
 ## 三类提醒
 
