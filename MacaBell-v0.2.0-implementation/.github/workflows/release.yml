@@ -1,0 +1,61 @@
+name: Release macOS DMG
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Release tag, for example v0.2.0"
+        required: true
+        default: "v0.2.0"
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos-universal:
+    name: Build universal macOS DMG
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install Rust stable with macOS targets
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build and upload universal DMG
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.event.inputs.tag_name || github.ref_name }}
+          releaseName: "MacaBell ${{ github.event.inputs.tag_name || github.ref_name }}"
+          releaseBody: |
+            MacaBell macOS release.
+
+            This build is an unsigned universal macOS DMG for both Apple Silicon and Intel Macs.
+            Because it is unsigned, macOS may show a developer verification warning on first launch.
+          releaseDraft: true
+          prerelease: false
+          args: "--target universal-apple-darwin --bundles dmg"
+          releaseAssetNamePattern: "MacaBell-v__VERSION__-[platform]-[arch].[ext]"
+          uploadWorkflowArtifacts: true
+          workflowArtifactNamePattern: "MacaBell-[platform]-[arch]-[bundle]"

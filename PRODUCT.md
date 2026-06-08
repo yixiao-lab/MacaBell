@@ -29,7 +29,7 @@
 - ✅ 糖果色马卡龙风格，6 套配色每次随机
 - ✅ 提示音，带全局开关
 - ✅ 开机自启（托盘可开关，基于 LaunchAgent）
-- ✅ 配置即文件：`~/.macaron-reminder/reminders.json`
+- ✅ 配置即文件：`~/.MacaBell/reminders.json`
 - ✅ 配置热加载：改任意字段 ≤20s 自动生效，无需重启（文件为单一事实源）
 
 技术栈：Tauri 2 + React + TS。后端 `src-tauri/src/lib.rs`，UI `src/App.tsx` + `App.css`。
