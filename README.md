@@ -1,50 +1,161 @@
-# MacaBell · 马卡龙提醒
+# MacaBell 🌈
 
-一个很小很可爱的 Mac 菜单栏提醒小工具。到点后，从屏幕右侧滑入一个温和的糖果色小弹窗，提醒你该休息、该做事，或者别忘了某个重要日子。
+<div align="center">
 
-没有账号，没有云同步，没有复杂后台。配置就是一个本地 JSON 文件，简单、直接、够用。
+<img src="./assets/screenshots/popup-stack.png" alt="MacaBell preview" width="760" />
 
-> v0.2.0 重点优化了开源可用性：Universal macOS DMG、GitHub Actions 自动打包、多提醒堆叠、配置错误提示、打开配置文件菜单、示例配置文件。
+<br />
 
-![MacaBell · 多条提醒堆叠不覆盖](assets/screenshots/popup-stack.png)
+**A soft pastel macOS menu bar reminder app built with Tauri 2, React, TypeScript, and Rust.**
 
-## 下载与安装
+MacaBell helps you remember small things right from your menu bar today — and is gradually evolving toward a local task inbox for AI coding workflows.
 
-- 官网：https://yixiao-lab.github.io/MacaBell/
-- 下载：前往 GitHub Releases 下载最新版 `.dmg`
+<br />
 
-> 应用未做 Apple 付费签名，首次打开若提示「无法验证开发者」或「已损坏」：在「应用程序」里右键点 MacaBell，选择「打开」，再点一次「打开」即可；仍不行就在终端执行一次 `xattr -dr com.apple.quarantine /Applications/MacaBell.app`。
+<a href="https://github.com/yixiao-lab/MacaBell/releases/latest">
+  <img src="https://img.shields.io/github/v/release/yixiao-lab/MacaBell?style=for-the-badge&label=Download&color=ff8fab" alt="Latest Release" />
+</a>
+<a href="https://github.com/yixiao-lab/MacaBell/stargazers">
+  <img src="https://img.shields.io/github/stars/yixiao-lab/MacaBell?style=for-the-badge&color=fbbf24" alt="GitHub Stars" />
+</a>
+<a href="https://github.com/yixiao-lab/MacaBell/blob/main/LICENSE">
+  <img src="https://img.shields.io/github/license/yixiao-lab/MacaBell?style=for-the-badge&color=8b5cf6" alt="License" />
+</a>
+<a href="https://github.com/yixiao-lab/MacaBell/releases">
+  <img src="https://img.shields.io/github/downloads/yixiao-lab/MacaBell/total?style=for-the-badge&color=38bdf8" alt="Downloads" />
+</a>
 
-## 特点
+<br />
+<br />
 
-- 马卡龙风格：6 套糖果配色每次随机，看着舒服、不焦虑、不打扰心流
-- 常驻菜单栏：没有主窗口，只在顶部菜单栏放一个小图标
-- 不抢焦点：弹窗不夺取键盘焦点，随手点掉即可
-- 多提醒堆叠：同一时间多条提醒不会互相覆盖
-- 本地 JSON 配置：单一文件 `~/.MacaBell/reminders.json`，所见即所得
-- 配置错误提示：JSON 写错时会给出温和提示，修好后自动恢复
-- 三类提醒：每日定时 / 固定间隔 / 每年纪念日
-- 柔和提示音：带全局开关，可在托盘菜单里随时切换
-- 开机自启：一键开启，登录即常驻
-- Universal DMG：支持 Apple Silicon 和 Intel Mac
+<img src="https://img.shields.io/badge/macOS-000000?style=flat-square&logo=apple&logoColor=white" alt="macOS" />
+<img src="https://img.shields.io/badge/Tauri_2-24C8DB?style=flat-square&logo=tauri&logoColor=white" alt="Tauri 2" />
+<img src="https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React" />
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+<img src="https://img.shields.io/badge/Rust-000000?style=flat-square&logo=rust&logoColor=white" alt="Rust" />
 
-## 界面预览
+<br />
+<br />
 
-到点后从屏幕右上角滑入糖果色小弹窗。单条提醒长这样，同一时间多条会自动堆叠、互不覆盖（见顶部预览图），每条都能单独关掉：
+<a href="https://yixiao-lab.github.io/MacaBell/"><strong>Website</strong></a>
+&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="https://github.com/yixiao-lab/MacaBell/releases/latest"><strong>Download</strong></a>
+&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#quick-start"><strong>Quick Start</strong></a>
+&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#roadmap"><strong>Roadmap</strong></a>
+&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#contributing"><strong>Contributing</strong></a>
 
-![单条提醒](assets/screenshots/popup-single.png)
+<br />
+<br />
 
-## 三类提醒
+**English** &nbsp;·&nbsp; <a href="./README.zh-CN.md">简体中文</a>
 
-| 类型 | 用途 | 例子 |
-| --- | --- | --- |
-| `daily` | 每日固定时间点 | 每天 14:00 写周报 |
-| `interval` | 固定间隔循环 | 每 60 分钟起身动动 |
-| `anniversary` | 每年某月某日 | 每年 06-15 的纪念日 |
+</div>
 
-## 配置
+<br />
 
-首次启动会在 `~/.MacaBell/reminders.json` 生成默认配置，直接编辑即可。
+## What is MacaBell?
+
+MacaBell is a tiny, local-first macOS menu bar reminder app.
+
+When a reminder fires, a gentle candy-colored popup slides in from the top-right corner of your screen — reminding you to rest, to do something, or to not forget an important day.
+
+No accounts. No cloud sync. No background platform. Your whole configuration is a single local JSON file — simple, direct, and enough.
+
+<br />
+
+## Why MacaBell?
+
+Most reminder apps slowly grow into heavy productivity systems: accounts, cloud sync, collaboration, subscriptions, complex workflows.
+
+MacaBell takes the smaller path.
+
+It focuses on a calm local menu bar experience, pleasant popups, three honest reminder types, and a codebase small enough that any developer can read it, fork it, and turn it into their own Tauri menu bar utility.
+
+<br />
+
+## Preview
+
+When a reminder fires, a candy-colored popup slides in from the top-right corner. When several reminders fire at once, they stack neatly instead of overlapping — and each one can be dismissed on its own.
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="./assets/screenshots/popup-single.png" alt="MacaBell single reminder" width="100%" />
+      <p align="center"><strong>Single Reminder</strong></p>
+    </td>
+    <td width="50%">
+      <img src="./assets/screenshots/popup-stack.png" alt="MacaBell stacked reminders" width="100%" />
+      <p align="center"><strong>Stacked Reminders</strong></p>
+    </td>
+  </tr>
+</table>
+
+<br />
+
+## Features
+
+- **Macaron style** — 6 candy color schemes picked at random, easy on the eyes, never anxious, never breaks your flow.
+- **Lives in the menu bar** — no main window, just a small icon at the top of your screen.
+- **Never steals focus** — popups don't grab the keyboard; click them away whenever you like.
+- **Stacked reminders** — multiple reminders at the same time never overlap.
+- **Local JSON config** — one single file at `~/.MacaBell/reminders.json`, what you see is what you get.
+- **Friendly error hints** — if the JSON is broken, MacaBell tells you gently and recovers once you fix it.
+- **Three reminder types** — daily time, fixed interval, yearly anniversary.
+- **Soft sound** — with a global toggle you can switch from the tray menu anytime.
+- **Launch at login** — one click to keep it running from startup.
+- **Universal DMG** — runs on both Apple Silicon and Intel Macs.
+
+<br />
+
+## Installation
+
+Download the latest macOS `.dmg` from the release page:
+
+**https://github.com/yixiao-lab/MacaBell/releases/latest**
+
+Drag MacaBell into your Applications folder and launch it.
+
+### First launch on macOS
+
+MacaBell is distributed as an unsigned open-source build (no paid Apple notarization yet).
+
+If macOS shows *"cannot verify the developer"* or *"the app is damaged"* on first launch:
+
+1. In **Applications**, right-click MacaBell → **Open**, then click **Open** again.
+2. If that still fails, run this once in Terminal:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/MacaBell.app
+```
+
+A signed and notarized build may be explored later if there is enough demand.
+
+<br />
+
+## Quick Start
+
+### 1. Launch MacaBell
+
+After installation, MacaBell appears in your menu bar. The first launch creates a default config at `~/.MacaBell/reminders.json`.
+
+### 2. Open the configuration file
+
+From the tray menu:
+
+```text
+MacaBell → Open Configuration File
+```
+
+Or edit it directly:
+
+```bash
+~/.MacaBell/reminders.json
+```
+
+### 3. Edit your reminders
 
 ```json
 {
@@ -54,50 +165,101 @@
       "id": "work-report",
       "type": "daily",
       "time": "14:00",
-      "title": "工作提醒",
-      "message": "该写周报啦"
+      "title": "Weekly Report",
+      "message": "Time to write your weekly report."
     },
     {
-      "id": "sit-too-long",
+      "id": "drink-water",
       "type": "interval",
       "everyMinutes": 60,
-      "title": "久坐提醒",
-      "message": "起来动动，喝口水吧"
+      "title": "Hydrate",
+      "message": "Drink some water and relax your shoulders."
     },
     {
       "id": "anniversary",
       "type": "anniversary",
       "date": "06-15",
       "time": "09:00",
-      "title": "纪念日",
-      "message": "今天是个特别的日子"
+      "title": "Anniversary",
+      "message": "Today is a special day."
     }
   ]
 }
 ```
 
-也可以参考 `examples/reminders.json`。
+Save the file — no restart needed. MacaBell reloads the latest config in the background every 20 seconds.
 
-改完无需重启，后台每 20 秒读取一次最新配置。
+More examples are in [`examples/reminders.json`](examples/reminders.json).
 
-## 菜单栏
+<br />
 
-点击菜单栏的马卡龙图标：
+## Reminder Configuration
 
-- 测试提醒一下：立刻弹一条，确认效果
-- 打开配置文件：直接打开 `reminders.json`
-- 在 Finder 中显示配置：定位到配置文件所在位置
-- 开启提醒声音：声音开关，写回配置文件
-- 开机自动启动：登录时自动常驻
-- 退出
+MacaBell supports three reminder types.
 
-## 技术栈
+| Type | Use case | Key fields |
+| --- | --- | --- |
+| `daily` | Same time every day | `time` (`"14:00"`) |
+| `interval` | Repeat every N minutes | `everyMinutes` (`60`) |
+| `anniversary` | A date every year | `date` (`"06-15"`), optional `time` |
 
-Tauri 2 + React + TypeScript。后端调度 / 托盘 / 窗口控制在 `src-tauri/src/lib.rs`，前端弹窗在 `src/App.tsx`。
+### Daily
 
-对我来说，它同时也是一个 Tauri 菜单栏应用的小脚手架。以后想做 AI 快捷助手、定时通知工具、剪贴板工具，都可以基于它继续改。
+```json
+{
+  "id": "morning-exercise",
+  "type": "daily",
+  "time": "08:00",
+  "title": "Morning Exercise",
+  "message": "Time for a quick workout."
+}
+```
 
-## 开发
+### Interval
+
+```json
+{
+  "id": "stand-up",
+  "type": "interval",
+  "everyMinutes": 90,
+  "title": "Stand Up",
+  "message": "Get up and walk around for a minute."
+}
+```
+
+### Anniversary
+
+```json
+{
+  "id": "birthday",
+  "type": "anniversary",
+  "date": "12-25",
+  "time": "09:00",
+  "title": "Birthday",
+  "message": "Remember the birthday today."
+}
+```
+
+<br />
+
+## Tray Menu
+
+Click the macaron icon in the menu bar:
+
+- **Test a reminder** — fire one instantly to check the effect.
+- **Open Configuration File** — open `reminders.json` directly.
+- **Reveal Config in Finder** — locate the config file.
+- **Enable Sound** — sound toggle, written back to the config file.
+- **Launch at Login** — keep it running from startup.
+- **Quit**
+
+<br />
+
+## Development
+
+### Requirements
+
+Node.js, pnpm, Rust, and the Tauri prerequisites for macOS.
 
 ```bash
 pnpm install
@@ -105,35 +267,140 @@ pnpm tauri dev
 pnpm tauri build
 ```
 
-本地构建 Universal macOS DMG：
+Build a Universal macOS DMG locally:
 
 ```bash
 ./scripts/build-universal-macos.sh
 ```
 
-> 改了 `src-tauri/icons/` 里的图标后，记得 `touch src-tauri/build.rs` 再重新编译，否则 cargo 不会重新嵌入图标。
+> After changing icons in `src-tauri/icons/`, run `touch src-tauri/build.rs` before rebuilding, otherwise cargo won't re-embed the icons.
 
-## 发布
+<br />
 
-推送 tag 后，GitHub Actions 会自动打包 Universal macOS DMG，并创建 draft release。
+## Release
+
+Push a tag and GitHub Actions builds the Universal macOS DMG and creates a draft release:
 
 ```bash
 git tag v0.2.0
 git push origin v0.2.0
 ```
 
-更多说明见 `docs/RELEASE.md`。
+See [`docs/RELEASE.md`](docs/RELEASE.md) for details.
 
-## 初衷
+<br />
 
-我自己平时写代码、做项目，经常会忘记站起来活动，也会漏掉一些固定的小任务，所以想做一个看着舒服、不打扰心流的小工具。
+## Project Structure
 
-小工具不一定要很大，能解决一个自己真实的问题，就已经有价值了。
+```text
+MacaBell
+├── src/                  React popup UI (App.tsx)
+├── src-tauri/            Tauri, Rust, tray, scheduler, app config (lib.rs)
+├── examples/             Example reminder configurations
+├── assets/               Screenshots and visual assets
+├── docs/                 Website and release notes
+└── .github/workflows/    GitHub Actions release workflow
+```
 
-## 反馈
+<br />
 
-这个工具还很小，正在靠反馈长大。用得不顺手、想要某类提醒、或发现 bug，欢迎到 GitHub Issues 提，看到都会回。
+MacaBell is starting as a lightweight reminder app, and the long-term direction is a local task inbox for developer workflows.
+
+<table>
+  <tr>
+    <td width="22%"><strong>v0.2</strong></td>
+    <td>Universal macOS builds, GitHub Actions release packaging, example configs, friendly error handling, stacked reminders, and easier access to the config file.</td>
+  </tr>
+  <tr>
+    <td><strong>v0.3</strong></td>
+    <td>Explore local task notifications through a command-line interface such as <code>macabell notify</code>, letting Shell scripts and developer tools send events into MacaBell.</td>
+  </tr>
+  <tr>
+    <td><strong>v0.4</strong></td>
+    <td>Explore a local task inbox for long-running developer workflows — with event history, task states, and simple actions such as opening a project or copying a message.</td>
+  </tr>
+  <tr>
+    <td><strong>Future</strong></td>
+    <td>Explore integrations for AI coding workflows such as Codex, Claude Code, Cursor, Shell scripts, build tasks, and deployment tasks — only if real developers find it useful.</td>
+  </tr>
+</table>
+
+The project will stay local-first, lightweight, privacy-friendly, and open source.
+
+<br />
+
+## Future Direction
+
+MacaBell is useful today as a small reminder app.
+
+The larger idea is to make it a **local task inbox for AI coding workflows** and long-running developer tasks. Future versions may let tools and scripts send messages into one local place:
+
+```bash
+macabell notify \
+  --source codex \
+  --project MacaBell \
+  --status done \
+  --title "Task completed" \
+  --message "The implementation finished successfully."
+```
+
+Potential event sources include Codex, Claude Code, Cursor, Shell scripts, test commands, build commands, and deployment scripts.
+
+This direction will only be expanded if real developers find it useful. MacaBell stays local-first throughout: no accounts, no cloud sync, no team collaboration.
+
+<br />
+
+## Built With
+
+| | |
+| --- | --- |
+| **Tauri 2** | Native desktop shell and macOS integration. |
+| **React** | Reminder popup interface. |
+| **TypeScript** | Frontend application logic. |
+| **Rust** | Tray menu, scheduling, local file operations, native behavior. |
+
+<br />
+
+## Contributing
+
+Contributions, issues, ideas, and feedback are welcome — bug fixes, documentation, packaging improvements, example configs, and small usability tweaks that keep the app lightweight.
+
+Before opening a pull request, please read [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+<br />
+
+## Support
+
+If MacaBell helps you, or gives you a useful starting point for your own Tauri menu bar app:
+
+- ⭐ **Star** the repo to help more developers find it.
+- 🐛 **Open an issue** if you hit a bug or confusing behavior.
+- 💡 **Suggest** a focused improvement.
+- 🔁 **Share** it with someone building macOS menu bar utilities.
+
+<br />
+
+## Star History
+
+<a href="https://www.star-history.com/#yixiao-lab/MacaBell&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=yixiao-lab/MacaBell&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=yixiao-lab/MacaBell&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=yixiao-lab/MacaBell&type=Date" />
+  </picture>
+</a>
+
+<br />
 
 ## License
 
-MIT
+Released under the **MIT License**. See [`LICENSE`](LICENSE) for details.
+
+<br />
+
+## Author
+
+Built by **Yixiao Lab**.
+
+- GitHub: https://github.com/yixiao-lab
+- Project: https://github.com/yixiao-lab/MacaBell
