@@ -1,62 +1,67 @@
 # Roadmap
 
-MacaBell is a small, local-first macOS menu bar reminder app. The roadmap focuses on making it more stable, easier to install, easier to configure, and easier for developers to fork into other menu bar utilities.
+MacaBell is starting as a small, local-first macOS menu bar reminder app. The long-term direction is a **local task inbox for AI coding workflows** — one calm local place where scripts, build tasks, and AI coding tools can drop events you actually want to see.
+
+The project stays local-first, lightweight, privacy-friendly, and open source throughout.
 
 ## v0.2.0 — Make it easier to install and use
 
-Goal: turn the current working app into a more polished open-source release.
+Goal: turn the working app into a polished open-source release.
 
-- Add universal macOS builds for both Apple Silicon and Intel Macs.
-- Add GitHub Actions workflow for release builds.
-- Add a menu item to open `~/.MacaBell/reminders.json` directly.
-- Add a menu item to reveal the config folder in Finder.
-- Show a friendly error message when the JSON config is invalid.
-- Improve reminder queue behavior when multiple reminders trigger at the same time.
-- Add a demo GIF and clearer screenshots to the README.
-- Add an example `reminders.json` file.
+- Universal macOS builds for both Apple Silicon and Intel Macs.
+- GitHub Actions workflow for release builds.
+- Menu item to open `~/.MacaBell/reminders.json` directly.
+- Menu item to reveal the config folder in Finder.
+- Friendly error message when the JSON config is invalid.
+- Stacked reminders when multiple fire at the same time.
+- Clearer screenshots and an example `reminders.json`.
 
-## v0.3.0 — Make configuration friendlier
+## v0.3.0 — Local task notifications via CLI
 
-Goal: reduce the need to manually edit JSON for common reminder changes.
+Goal: let developer tools and scripts send events into MacaBell.
 
-- Add a simple config editor window.
-- Support enabling and disabling individual reminders.
-- Support duplicating a reminder.
-- Support pausing all reminders for a period of time.
-- Add basic validation for reminder time, date, and interval fields.
-- Improve the first-run onboarding experience.
+- Add a `macabell notify` command-line interface.
+- Accept `--source`, `--project`, `--status`, `--title`, `--message` flags.
+- Route CLI events into the same gentle popup system.
+- Document how to wire it into Shell scripts and build steps.
+- Keep everything local — no network, no account.
 
-## v0.4.0 — Make it a better Tauri menubar starter
+## v0.4.0 — Local task inbox
 
-Goal: make MacaBell useful as a reference project for people building small macOS utilities.
+Goal: turn one-off notifications into a browsable local inbox.
 
-- Document the Tauri tray, window, scheduler, and local config structure.
-- Add comments around key Rust and frontend integration points.
-- Add a small architecture diagram.
-- Extract reusable helper modules where it makes sense.
-- Add examples for building other menu bar tools from the same structure.
+- A simple task inbox window with event history.
+- Task states (pending / done / failed).
+- Lightweight actions: open a project, copy a message, dismiss.
+- Filter and group events by source and project.
+- Still a single local data file, still easy to understand.
+
+## Future — AI coding workflow integrations
+
+Goal: become the local "done" signal for long-running AI and dev tasks.
+
+- Integrations for Codex, Claude Code, and Cursor.
+- Hooks for Shell scripts, test runs, build commands, and deploys.
+- These expand **only if real developers find them useful.**
 
 ## Later ideas
 
-These are possible directions, but they should stay secondary unless there is real user demand.
+Secondary unless there is real user demand:
 
 - Custom themes.
 - More reminder repeat rules.
 - Export and import config.
-- Optional signed build.
+- Optional signed and notarized build.
 - Optional automatic updates.
 - A separate starter template for Tauri 2 menu bar apps.
 
 ## Non-goals
 
-MacaBell should not become a heavy productivity platform.
-
-The project does not plan to add:
+MacaBell should not become a heavy SaaS productivity platform. The project does not plan to add:
 
 - User accounts.
 - Cloud sync.
 - Team collaboration.
-- Complex calendar replacement features.
-- A full task management system.
+- A full calendar replacement.
 
-The core value is a calm, local, easy-to-understand menu bar reminder app.
+The core value stays the same: a calm, local, easy-to-understand tool — first for reminders, then as a local inbox for developer and AI coding workflows.
