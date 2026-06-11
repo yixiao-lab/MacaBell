@@ -107,6 +107,8 @@ When a reminder fires, a candy-colored popup slides in from the top-right corner
 - **Soft sound** — with a global toggle you can switch from the tray menu anytime.
 - **Launch at login** — one click to keep it running from startup.
 - **Universal DMG** — runs on both Apple Silicon and Intel Macs.
+- **CLI notifications** — `macabell notify` lets scripts and AI coding tools send local task events with ✅ / ❌ / ⏳ status icons.
+- **Claude Code / Codex ready** — wire into hooks and get notified when long-running tasks finish.
 
 <br />
 
@@ -319,8 +321,8 @@ Build a Universal macOS DMG locally:
 Push a tag and GitHub Actions builds the Universal macOS DMG and creates a draft release:
 
 ```bash
-git tag v0.2.0
-git push origin v0.2.0
+git tag v0.3.0
+git push origin v0.3.0
 ```
 
 See [`docs/RELEASE.md`](docs/RELEASE.md) for details.
@@ -332,10 +334,14 @@ See [`docs/RELEASE.md`](docs/RELEASE.md) for details.
 ```text
 MacaBell
 ├── src/                  React popup UI (App.tsx)
-├── src-tauri/            Tauri, Rust, tray, scheduler, app config (lib.rs)
+├── src-tauri/src/
+│   ├── lib.rs            Tray, scheduler, event watcher, popup control
+│   ├── cli.rs            `macabell notify` CLI — writes events to ~/.MacaBell/events/
+│   └── main.rs           Entry point — routes CLI vs GUI
+├── scripts/              Build and test scripts
 ├── examples/             Example reminder configurations
 ├── assets/               Screenshots and visual assets
-├── docs/                 Website and release notes
+├── docs/                 Website, release notes, CLI docs
 └── .github/workflows/    GitHub Actions release workflow
 ```
 
@@ -345,12 +351,12 @@ MacaBell is starting as a lightweight reminder app, and the long-term direction 
 
 <table>
   <tr>
-    <td width="22%"><strong>v0.2</strong></td>
+    <td width="22%"><strong>v0.2 ✅</strong></td>
     <td>Universal macOS builds, GitHub Actions release packaging, example configs, friendly error handling, stacked reminders, and easier access to the config file.</td>
   </tr>
   <tr>
-    <td><strong>v0.3</strong></td>
-    <td>Explore local task notifications through a command-line interface such as <code>macabell notify</code>, letting Shell scripts and developer tools send events into MacaBell.</td>
+    <td><strong>v0.3 ✅</strong></td>
+    <td><code>macabell notify</code> CLI for local task notifications — Shell scripts, build steps, and AI coding tools (Claude Code, Codex) can send events into MacaBell with status icons and project context.</td>
   </tr>
   <tr>
     <td><strong>v0.4</strong></td>
@@ -368,20 +374,44 @@ The project will stay local-first, lightweight, privacy-friendly, and open sourc
 
 ## Future Direction
 
-MacaBell is useful today as a small reminder app.
+MacaBell is useful today as a reminder app and a local notification endpoint for developer tools.
 
-The larger idea is to make it a **local task inbox for AI coding workflows** and long-running developer tasks. Future versions may let tools and scripts send messages into one local place:
+Since v0.3.0, AI coding tools and scripts can already send task notifications via `macabell notify`. The next step is a **local task inbox** — an event history with task states, so you can review what happened while you were away.
 
-```bash
-macabell notify \
-  --source codex \
-  --project MacaBell \
-  --status done \
-  --title "Task completed" \
-  --message "The implementation finished successfully."
+### Claude Code Integration
+
+Wire MacaBell into Claude Code hooks to get notified when tasks finish:
+
+```jsonc
+// ~/.claude/settings.json
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/macabell-notify.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
 ```
 
-Potential event sources include Codex, Claude Code, Cursor, Shell scripts, test commands, build commands, and deployment scripts.
+The hook script extracts the project name from the working directory and sends a pastel popup:
+
+```bash
+#!/bin/bash
+# ~/.claude/hooks/macabell-notify.sh
+INPUT=$(cat)
+CWD=$(echo "$INPUT" | python3 -c "import sys,json; print(json.loads(sys.stdin.read()).get('cwd',''))" 2>/dev/null || echo "")
+PROJECT=$(basename "${CWD:-unknown}")
+macabell notify --source claude-code --project "$PROJECT" --status done \
+  --title "Claude Code · $PROJECT" --message "Claude Code task finished"
+```
 
 This direction will only be expanded if real developers find it useful. MacaBell stays local-first throughout: no accounts, no cloud sync, no team collaboration.
 

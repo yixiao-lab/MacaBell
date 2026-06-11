@@ -107,6 +107,8 @@ MacaBell 走更小的那条路。
 - **柔和提示音** — 带全局开关，可在托盘菜单里随时切换。
 - **开机自启** — 一键开启，登录即常驻。
 - **Universal DMG** — 同时支持 Apple Silicon 和 Intel Mac。
+- **命令行通知** — `macabell notify` 让脚本和 AI 编程工具发送本地任务事件，带 ✅ / ❌ / ⏳ 状态图标。
+- **Claude Code / Codex 就绪** — 接入 hooks，长任务完成时自动弹窗通知。
 
 <br />
 
@@ -319,8 +321,8 @@ pnpm tauri build
 推送 tag 后，GitHub Actions 会自动打包 Universal macOS DMG 并创建 draft release：
 
 ```bash
-git tag v0.2.0
-git push origin v0.2.0
+git tag v0.3.0
+git push origin v0.3.0
 ```
 
 更多说明见 [`docs/RELEASE.md`](docs/RELEASE.md)。
@@ -332,10 +334,14 @@ git push origin v0.2.0
 ```text
 MacaBell
 ├── src/                  React 弹窗界面（App.tsx）
-├── src-tauri/            Tauri / Rust / 托盘 / 调度 / 应用配置（lib.rs）
+├── src-tauri/src/
+│   ├── lib.rs            托盘、调度、事件消费、弹窗控制
+│   ├── cli.rs            `macabell notify` CLI——写入事件到 ~/.MacaBell/events/
+│   └── main.rs           入口——路由 CLI 与 GUI
+├── scripts/              构建与测试脚本
 ├── examples/             示例提醒配置
 ├── assets/               截图与视觉资源
-├── docs/                 官网与发布说明
+├── docs/                 官网、发布说明、CLI 文档
 └── .github/workflows/    GitHub Actions 发布流程
 ```
 
@@ -349,12 +355,12 @@ MacaBell 从一个轻量提醒应用起步，长期方向是 **AI 编程工作�
 
 <table>
   <tr>
-    <td width="22%"><strong>v0.2</strong></td>
+    <td width="22%"><strong>v0.2 ✅</strong></td>
     <td>Universal macOS 构建、GitHub Actions 自动打包、示例配置、友好的错误提示、多提醒堆叠，以及更方便地打开配置文件。</td>
   </tr>
   <tr>
-    <td><strong>v0.3</strong></td>
-    <td>探索通过命令行（如 <code>macabell notify</code>）发送本地任务通知，让 Shell 脚本和开发工具把事件投递进 MacaBell。</td>
+    <td><strong>v0.3 ✅</strong></td>
+    <td><code>macabell notify</code> 命令行通知——Shell 脚本、构建步骤、AI 编程工具（Claude Code、Codex）可以向 MacaBell 发送带状态图标和项目上下文的任务事件。</td>
   </tr>
   <tr>
     <td><strong>v0.4</strong></td>
@@ -370,20 +376,44 @@ MacaBell 从一个轻量提醒应用起步，长期方向是 **AI 编程工作�
 
 ## 未来方向
 
-MacaBell 今天作为一个小提醒工具已经够用。
+MacaBell 今天既是一个提醒工具，也是开发工具的本地通知终端。
 
-更大的想法是把它做成 **AI 编程工作流的本地任务收件箱**和长任务的归处。未来版本可能让各种工具和脚本把消息投递到同一个本地角落：
+从 v0.3.0 起，AI 编程工具和脚本已经可以通过 `macabell notify` 发送任务通知。下一步是**本地任务收件箱**——带事件历史和任务状态，让你回来后能回顾发生了什么。
 
-```bash
-macabell notify \
-  --source codex \
-  --project MacaBell \
-  --status done \
-  --title "任务完成" \
-  --message "实现已成功完成。"
+### Claude Code 集成
+
+把 MacaBell 接入 Claude Code hooks，任务完成时自动弹窗：
+
+```jsonc
+// ~/.claude/settings.json
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/macabell-notify.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
 ```
 
-可能的事件来源包括 Codex、Claude Code、Cursor、Shell 脚本、测试命令、构建命令、部署脚本。
+hook 脚本从工作目录提取项目名，发送马卡龙色弹窗：
+
+```bash
+#!/bin/bash
+# ~/.claude/hooks/macabell-notify.sh
+INPUT=$(cat)
+CWD=$(echo "$INPUT" | python3 -c "import sys,json; print(json.loads(sys.stdin.read()).get('cwd',''))" 2>/dev/null || echo "")
+PROJECT=$(basename "${CWD:-unknown}")
+macabell notify --source claude-code --project "$PROJECT" --status done \
+  --title "Claude Code · $PROJECT" --message "Claude Code 任务完成"
+```
 
 这个方向只会在真实开发者觉得有用时才扩展。全程保持本地优先：不做账号、不做云同步、不做团队协作。
 
