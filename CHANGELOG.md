@@ -8,12 +8,23 @@ The format is inspired by Keep a Changelog, and this project follows a simple ve
 
 ### Planned
 
-- Add universal macOS builds for both Apple Silicon and Intel Macs.
-- Add GitHub Actions release workflow for building `.dmg` files.
-- Add a menu item to open the local reminder config file directly.
-- Improve error handling when `reminders.json` is invalid.
-- Improve handling when multiple reminders are triggered at the same time.
-- Add more screenshots and a short demo GIF to the README.
+- Add a `macabell notify` command-line interface for local task notifications.
+
+## [0.2.0] - 2026-06-11
+
+### Added
+
+- Universal macOS builds for both Apple Silicon and Intel Macs.
+- GitHub Actions release workflow that builds and uploads a universal `.dmg`.
+- Tray menu item to open `~/.MacaBell/reminders.json` directly.
+- Tray menu item to reveal the config folder in Finder.
+- Friendly popup message when the JSON config is invalid.
+- Stacked reminder popups when multiple reminders fire at the same time.
+- Example `reminders.json` under `examples/` and clearer screenshots in the README.
+
+### Notes
+
+- The build is still unsigned, so macOS may show a developer verification warning on first launch.
 
 ## [0.1.0] - 2026-06-07
 
