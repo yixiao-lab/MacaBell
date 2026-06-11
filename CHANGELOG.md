@@ -8,7 +8,22 @@ The format is inspired by Keep a Changelog, and this project follows a simple ve
 
 ### Planned
 
-- Add a `macabell notify` command-line interface for local task notifications.
+- A simple task inbox window with event history (v0.4.0).
+
+## [0.3.0] - 2026-06-11
+
+### Added
+
+- `macabell notify` command-line interface for sending local task notifications.
+- Flags: `--source`, `--project`, `--status`, `--title`, `--message`.
+- CLI events route into the same pastel popup system, with ✅ / ❌ / ⏳ status icons.
+- Events are plain JSON files under `~/.MacaBell/events/`, consumed by the running app within a second — no network, no account.
+- Documentation for wiring the CLI into shell scripts, build steps, and Claude Code hooks (`docs/CLI.md`).
+
+### Notes
+
+- The CLI lives inside the app binary; link it once with `sudo ln -sf /Applications/MacaBell.app/Contents/MacOS/MacaBell /usr/local/bin/macabell`.
+- Events sent while the app is not running are kept and shown on next launch.
 
 ## [0.2.0] - 2026-06-11
 

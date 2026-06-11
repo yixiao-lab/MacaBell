@@ -242,6 +242,43 @@ MacaBell supports three reminder types.
 
 <br />
 
+## Task Notifications via CLI
+
+Since v0.3.0, scripts and developer tools can send local task notifications into MacaBell:
+
+```bash
+macabell notify --source codex --project my-app --status done --message "Build finished"
+```
+
+A pastel popup appears immediately while MacaBell is running. Everything stays local — events are plain JSON files under `~/.MacaBell/events/`, no network, no account.
+
+To get the `macabell` command, link the app binary once:
+
+```bash
+sudo ln -sf /Applications/MacaBell.app/Contents/MacOS/MacaBell /usr/local/bin/macabell
+```
+
+Flags:
+
+| Flag | Description |
+| --- | --- |
+| `--message` | Popup body text (required unless `--title` is set) |
+| `--title` | Popup title; defaults to `source · project` |
+| `--source` | Where the event came from, e.g. `claude-code`, `codex`, `ci` |
+| `--project` | Project name |
+| `--status` | `done` / `failed` / `pending` — adds ✅ / ❌ / ⏳ to the message |
+
+Wire it into a shell script or build step:
+
+```bash
+pnpm build && macabell notify --source ci --project my-app --status done --message "Build passed" \
+  || macabell notify --source ci --project my-app --status failed --message "Build failed"
+```
+
+See [docs/CLI.md](docs/CLI.md) for more recipes.
+
+<br />
+
 ## Tray Menu
 
 Click the macaron icon in the menu bar:

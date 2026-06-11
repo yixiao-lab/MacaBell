@@ -1,4 +1,6 @@
-// 马卡龙提醒 —— Tauri 后端：配置加载 / 定时调度 / 托盘 / 声音 / 窗口控制
+// 马卡龙提醒 —— Tauri 后端：配置加载 / 定时调度 / CLI 事件 / 托盘 / 声音 / 窗口控制
+
+pub mod cli;
 
 use std::collections::HashMap;
 use std::fs;
@@ -354,6 +356,100 @@ fn spawn_scheduler(app: tauri::AppHandle) {
     });
 }
 
+// ---------- CLI 事件消费 ----------
+
+// 把 CLI 事件映射成弹窗内容：标题缺省由 source/project 拼出，status 决定图标
+fn task_event_to_payload(event: &cli::TaskEvent, file_stem: &str) -> ReminderPayload {
+    let title = if !event.title.is_empty() {
+        event.title.clone()
+    } else {
+        match (event.source.is_empty(), event.project.is_empty()) {
+            (false, false) => format!("{} · {}", event.source, event.project),
+            (false, true) => event.source.clone(),
+            (true, false) => event.project.clone(),
+            (true, true) => "任务通知".to_string(),
+        }
+    };
+
+    let icon = match event.status.as_str() {
+        "done" | "success" | "ok" => "✅ ",
+        "failed" | "error" => "❌ ",
+        "pending" | "running" => "⏳ ",
+        _ => "",
+    };
+
+    let message = if !event.message.is_empty() {
+        format!("{icon}{}", event.message)
+    } else if !event.status.is_empty() {
+        format!("{icon}{}", event.status)
+    } else {
+        String::new()
+    };
+
+    ReminderPayload {
+        id: format!("cli-{file_stem}"),
+        title,
+        message,
+    }
+}
+
+// 每秒轮询 ~/.MacaBell/events/，消费 CLI 投递的事件文件并弹窗
+fn spawn_event_watcher(app: tauri::AppHandle) {
+    thread::spawn(move || loop {
+        let dir = cli::events_dir();
+
+        if let Ok(entries) = fs::read_dir(&dir) {
+            let mut files: Vec<PathBuf> = entries
+                .flatten()
+                .map(|e| e.path())
+                .filter(|p| {
+                    p.extension().map(|ext| ext == "json").unwrap_or(false)
+                        && p.file_name()
+                            .and_then(|n| n.to_str())
+                            .map(|n| !n.starts_with('.'))
+                            .unwrap_or(false)
+                })
+                .collect();
+            files.sort();
+
+            let mut fired = false;
+
+            for path in files {
+                let parsed = fs::read_to_string(&path)
+                    .ok()
+                    .and_then(|text| serde_json::from_str::<cli::TaskEvent>(&text).ok());
+
+                match parsed {
+                    Some(event) => {
+                        let stem = path
+                            .file_stem()
+                            .and_then(|s| s.to_str())
+                            .unwrap_or("event")
+                            .to_string();
+                        emit_popup(&app, task_event_to_payload(&event, &stem));
+                        fired = true;
+                    }
+                    None => {
+                        eprintln!("[macaron] 事件文件无法解析，已跳过：{}", path.display());
+                    }
+                }
+
+                // 无论成功失败都删除，避免坏文件反复触发
+                let _ = fs::remove_file(&path);
+            }
+
+            if fired {
+                let sound_enabled = *app.state::<AppState>().sound_enabled.lock().unwrap();
+                if sound_enabled {
+                    play_sound();
+                }
+            }
+        }
+
+        thread::sleep(Duration::from_secs(1));
+    });
+}
+
 // ---------- 前端可调用命令 ----------
 
 #[tauri::command]
@@ -454,7 +550,8 @@ pub fn run() {
                 })
                 .build(app)?;
 
-            spawn_scheduler(handle);
+            spawn_scheduler(handle.clone());
+            spawn_event_watcher(handle);
             Ok(())
         })
         .run(tauri::generate_context!())

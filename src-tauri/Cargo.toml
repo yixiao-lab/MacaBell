@@ -1,6 +1,6 @@
 [package]
 name = "MacaBell"
-version = "0.2.0"
+version = "0.3.0"
 description = "A soft pastel macOS menu bar reminder app"
 authors = ["yixiao-lab"]
 edition = "2021"

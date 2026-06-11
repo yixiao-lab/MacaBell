@@ -242,6 +242,43 @@ MacaBell 支持三种提醒类型。
 
 <br />
 
+## 命令行任务通知
+
+从 v0.3.0 开始，脚本和开发工具可以向 MacaBell 发送本地任务通知：
+
+```bash
+macabell notify --source codex --project my-app --status done --message "构建完成"
+```
+
+MacaBell 运行时会立即弹出马卡龙色弹窗。一切保持本地 —— 事件只是 `~/.MacaBell/events/` 下的 JSON 文件，没有网络，没有账号。
+
+先做一次软链接，拿到 `macabell` 命令：
+
+```bash
+sudo ln -sf /Applications/MacaBell.app/Contents/MacOS/MacaBell /usr/local/bin/macabell
+```
+
+参数说明：
+
+| 参数 | 说明 |
+| --- | --- |
+| `--message` | 弹窗正文（与 `--title` 至少填一个） |
+| `--title` | 弹窗标题，缺省由 `source · project` 拼出 |
+| `--source` | 事件来源，如 `claude-code`、`codex`、`ci` |
+| `--project` | 所属项目 |
+| `--status` | `done` / `failed` / `pending`，正文前显示 ✅ / ❌ / ⏳ |
+
+接入 Shell 脚本或构建步骤：
+
+```bash
+pnpm build && macabell notify --source ci --project my-app --status done --message "构建通过" \
+  || macabell notify --source ci --project my-app --status failed --message "构建失败"
+```
+
+更多用法见 [docs/CLI.md](docs/CLI.md)。
+
+<br />
+
 ## 菜单栏
 
 点击菜单栏的马卡龙图标：
