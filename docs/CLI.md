@@ -39,22 +39,37 @@ Exit codes: `0` event written, `1` write failed, `2` bad arguments.
 
 ### Shell script / build step
 
+The project name usually doesn't need hardcoding — derive it from the current directory:
+
 ```bash
 pnpm build \
-  && macabell notify --source ci --project my-app --status done --message "Build passed" \
-  || macabell notify --source ci --project my-app --status failed --message "Build failed"
+  && macabell notify --source ci --project "$(basename "$PWD")" --status done --message "Build passed" \
+  || macabell notify --source ci --project "$(basename "$PWD")" --status failed --message "Build failed"
 ```
 
-### Long-running command
+### Wrap any long-running command
+
+Add this function to your shell profile, then prefix any command with `mb`. The project name comes from the current directory, and the status follows the real exit code:
 
 ```bash
-cargo test; macabell notify --source shell --project my-app \
-  --status $([ $? -eq 0 ] && echo done || echo failed) --message "cargo test finished"
+mb() {
+  "$@"
+  local code=$?
+  macabell notify --source shell --project "$(basename "$PWD")" \
+    --status "$([ "$code" -eq 0 ] && echo done || echo failed)" \
+    --message "$* (exit $code)"
+  return $code
+}
+```
+
+```bash
+mb cargo test
+mb pnpm build
 ```
 
 ### Claude Code Stop hook
 
-In `.claude/settings.json`:
+In `.claude/settings.json`. Claude Code exposes `$CLAUDE_PROJECT_DIR` to hook commands, so the project name stays dynamic:
 
 ```json
 {
@@ -64,7 +79,7 @@ In `.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "macabell notify --source claude-code --project my-app --status done --message 'Claude Code finished a task'"
+            "command": "macabell notify --source claude-code --project \"$(basename \"$CLAUDE_PROJECT_DIR\")\" --status done --message 'Claude Code finished a task'"
           }
         ]
       }
@@ -72,6 +87,8 @@ In `.claude/settings.json`:
   }
 }
 ```
+
+Note: the Stop hook only means "Claude finished responding" — it carries no success/failure signal, so `--status done` here really means "finished". To distinguish real outcomes, notify from the commands themselves: have Claude run builds and tests through the `mb` wrapper above, which reports `done` or `failed` from the actual exit code.
 
 ## How it works
 

@@ -271,8 +271,8 @@ Flags:
 Wire it into a shell script or build step:
 
 ```bash
-pnpm build && macabell notify --source ci --project my-app --status done --message "Build passed" \
-  || macabell notify --source ci --project my-app --status failed --message "Build failed"
+pnpm build && macabell notify --source ci --project "$(basename "$PWD")" --status done --message "Build passed" \
+  || macabell notify --source ci --project "$(basename "$PWD")" --status failed --message "Build failed"
 ```
 
 See [docs/CLI.md](docs/CLI.md) for more recipes.

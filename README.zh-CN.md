@@ -271,8 +271,8 @@ sudo ln -sf /Applications/MacaBell.app/Contents/MacOS/MacaBell /usr/local/bin/ma
 接入 Shell 脚本或构建步骤：
 
 ```bash
-pnpm build && macabell notify --source ci --project my-app --status done --message "构建通过" \
-  || macabell notify --source ci --project my-app --status failed --message "构建失败"
+pnpm build && macabell notify --source ci --project "$(basename "$PWD")" --status done --message "构建通过" \
+  || macabell notify --source ci --project "$(basename "$PWD")" --status failed --message "构建失败"
 ```
 
 更多用法见 [docs/CLI.md](docs/CLI.md)。
